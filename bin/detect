@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # bin/detect <build-dir>
 
-echo "Ghostscript 9.19"
+echo "LibreOffice 6.3.4"
 exit 0
 
