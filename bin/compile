@@ -1,18 +1,20 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
-echo "-----> Installing LibreOffice 6.3.4 using build directory $1"
+echo "-----> Installing Ghostscript 9.19 using build directory $1"
 
 BUILD_DIR=$1
-PACKAGE="https://notarize-dev-static-assets.s3.amazonaws.com/LibreOffice_6.3.4_Linux_x86-64_deb_sdk.tar.gz"
-LOCATION="$BUILD_DIR/vendor/libreoffice"
+PACKAGE="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs919/ghostscript-9.19-linux-x86_64.tgz"
+BINARY="ghostscript-9.19-linux-x86_64/gs-919-linux_x86_64"
+LOCATION="$BUILD_DIR/vendor/gs"
 
 cd $BUILD_DIR
 mkdir -p $LOCATION/bin
-curl -L --silent $PACKAGE | tar xvf
+wget -O gs.tgz $PACKAGE # Couldn't get curl to work for some reason
+tar xvf gs.tgz
+mv $BINARY $LOCATION/bin/gs
 
-echo "-------------extracted package-----------------"
-cd LibreOffice_6.3.4_Linux_x86-64_deb_sdk/DEBS
-echo "-------------moved folders-----------------"
-dpkg -i *.deb
-echo "-------------install debs-----------------"
+echo "-----> Building runtime environment for Ghostscript to $LOCATION"
+
+mkdir -p $BUILD_DIR/.profile.d
+echo "export PATH=\"\$HOME/vendor/gs/bin:\$PATH\"" > $BUILD_DIR/.profile.d/ghostscript.sh
